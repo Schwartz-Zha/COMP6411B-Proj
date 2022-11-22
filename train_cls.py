@@ -42,13 +42,30 @@ def train(config):
         # testloader = torch.utils.data.DataLoader(testset, batch_size=config.bs, shuffle=False, num_workers=4)
 
         num_classes = 200
+
+    elif config.dataset == "CIFAR10":
+        transform_train = Compose([
+            RandomHorizontalFlip(),
+            ToTensor(),
+            Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        ])
+        transform_test = Compose([
+            ToTensor(),
+            Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        ])
+
+        trainset = cifar10(root='./', train=True, download=True, transform=transform_train, lr_cls=True)
+
+        testset = cifar10(root='./', train=False, download=True, transform=transform_test, lr_cls=True)
+
+        num_classes = 10
     
-    
+
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=config.bs, shuffle=True, num_workers=2)
     testloader = torch.utils.data.DataLoader(testset, batch_size=config.bs, shuffle=False, num_workers=2)
     
     if config.net == 'vgg16':
-        model = vgg16_bn(num_classes=num_classes)
+        model = vgg16_bn(num_classes=num_classes,dataset=config.dataset)
     elif config.net == 'resnet18':
         model = resnet18(num_classes=num_classes)
     

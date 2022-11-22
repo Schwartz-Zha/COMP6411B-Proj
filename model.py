@@ -5,13 +5,13 @@ import torch.nn.functional as F
 
 
 class VGG(nn.Module):
-    def __init__(self, features, num_classes=10, dataset='tiny', init_weights=True, dropout=0.5):
+    def __init__(self, features, num_classes=10, dataset='tinyImageNet', init_weights=True, dropout=0.5):
         super().__init__()
 
         self.features = features
-        if dataset == 'tiny':
+        if dataset == 'tinyImageNet':
             fea_size = 2
-        elif dataset == 'cifar':
+        elif dataset == 'CIFAR10':
             fea_size = 1
         
         self.avgpool = nn.AdaptiveAvgPool2d((fea_size, fea_size))
@@ -69,13 +69,13 @@ cfgs = {
 }
 
 
-def _vgg(cfg, batch_norm=True, num_classes=10, dataset='tiny'):
+def _vgg(cfg, batch_norm=True, num_classes=10, dataset='tinyImageNet'):
     model = VGG(make_layers(cfgs[cfg], batch_norm=batch_norm), num_classes=num_classes, dataset=dataset)
 
     return model
 
 
-def vgg16_bn(num_classes=10, dataset='tiny'):
+def vgg16_bn(num_classes=10, dataset='tinyImageNet'):
     return _vgg("D", True, num_classes=num_classes, dataset=dataset)
 
 

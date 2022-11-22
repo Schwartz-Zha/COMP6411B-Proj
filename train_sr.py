@@ -46,6 +46,25 @@ def train(config):
 
         num_classes = 200
     
+    elif config.dataset == "CIFAR10":
+        transform_train = Compose([
+            RandomHorizontalFlip(),
+            ToTensor(),
+            Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        ])
+        transform_test = Compose([
+            ToTensor(),
+            Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        ])
+
+        inv_norm = transforms.Normalize((-0.5/0.5, -0.5/0.5, -0.5/0.5), (1.0/0.5, 1.0/0.5, 1.0/0.5))
+
+        trainset = cifar10(root='./', train=True, download=True, transform=transform_train, lr_cls=False)
+
+        testset = cifar10(root='./', train=False, download=True, transform=transform_test, lr_cls=False)
+
+        num_classes = 10
+    
     
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=config.bs, shuffle=True, num_workers=2)
     testloader = torch.utils.data.DataLoader(testset, batch_size=config.bs, shuffle=False, num_workers=2)
